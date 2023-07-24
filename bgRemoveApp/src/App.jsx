@@ -8,15 +8,17 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const removeBg = async () => {
     setIsLoading(true)
-    const response = await fetch('http://localhost:3000/remove-background', {
+    //const response = await fetch('http://localhost:3000/remove-background', {
+    const response = await fetch('http://127.0.0.1:8000/removeBg', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ url }),
+      body: JSON.stringify({url}),
     })
     const jsonResponse = await response.json();
     if (response.ok) {
+  
       setProcessedImage(jsonResponse.processedImage)
       setIsLoading(false)
     } else {
