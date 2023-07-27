@@ -1,8 +1,30 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 0;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  color: aliceblue;
+}
+body{
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  background-color: #202b38;
+
+}
+h1{
+  font-size: 36px;
+}
+.mainContainer{
+  display: flex;
+  flex-direction: column;
+  align-content:center ;
+  align-items: center;
+  width: 1200px;
+  max-width: 1200px;
+  padding-bottom: 200px;
+
 }
 
 .topHeader{
@@ -28,3 +50,43 @@
   gap: 25px;
   padding: 20px;
 } 
+.navigationVar{
+ 
+ display: flex;
+ justify-content: center;
+ gap: 25px;
+ padding: 25px;
+
+ position: sticky;
+ top: 0px;
+ background-color: #202b38;
+
+
+}
+.navLink{
+  text-decoration: none;
+  color: aliceblue;
+  font-size: 18px;
+  font-weight: 600;
+  
+}
+.button1{
+  all: unset;
+  cursor: pointer;
+  background-color: #121314;
+  padding: 10px 15px;
+  border-radius: 7px;
+}
+.button:hover{
+  background-color: #000000;
+  color: rgb(208, 209, 211);
+}
+
+
+input[type="text"] {
+  all: unset;
+  background-color: #19191a;
+  padding: 10px 15px;
+  border-radius: 7px;
+}
+
