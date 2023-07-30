@@ -14,7 +14,6 @@ const Nav = () => {
                 </Link>
             </nav>
             <div className="mainContainer">
-
                 <Outlet />
             </div>
         </>

@@ -2,9 +2,11 @@
 const express = require('express');
 const { spawn } = require('child_process');
 const fs = require('fs');
+const path = require('path');
 const app = express();
 const fetch = require('node-fetch');
-const cors = require('cors')
+const cors = require('cors');
+const { exit } = require('process');
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,9 +19,10 @@ app.post('/remove-background', async (req, res) => {
         // Fetch the image from the URL using 'fetch'
         const response = await fetch(imageUrl);
         if (!response.ok) {
+            res.status(500).send({ error: 'UrlNotValid' });
             throw new Error('Failed to fetch the image');
+           
         }
-
         const imageData = await response.buffer();
 
         // Write the image data to a temporary file (input.jpg)
@@ -49,19 +52,39 @@ app.post('/remove-background', async (req, res) => {
                 // The Python script executed successfully
                 // Read the processed image from the output file (output.png)
 
-                const processedImage = fs.readFileSync(outputPath, 'base64');
+                /*const processedImage = fs.readFileSync(outputPath, 'base64');
+                const processedImageFile = fs.readFileSync(outputPath);
+                // res.send({ processedImage });
+                    */
 
-                // Send the processed image as a response
-                res.send({ processedImage });
+                const imagePath = path.join(__dirname, outputPath);
+
+                try {
+                    // Send the image as a response
+                    const imageContent = fs.readFileSync(imagePath);
+                    res.setHeader('Content-Type', 'image/jpeg'); // Adjust the content type as needed
+                    res.send(imageContent);
+                } catch (err) {
+                    console.error('Error sending image:', err);
+                    res.status(500).send('Error sending image');
+                }
+
+                // Synchronously unlink the files
+                try {
+                    fs.unlinkSync(outputPath);
+                    fs.unlinkSync(inputPath);
+                } catch (err) {
+                    console.error('Error deleting files:', err);
+                }
+
             } else {
-                // There was an error during Python script execution
                 console.error('Python script exited with code:', code);
                 res.status(500).send({ error: 'Background removal failed' });
             }
 
-            // Cleanup: remove temporary input and output files
-            fs.unlinkSync(inputPath);
-            fs.unlinkSync(outputPath);
+
+            // fs.unlinkSync(inputPath);
+            // fs.unlinkSync(outputPath);
         });
 
     } catch (error) {
@@ -69,7 +92,12 @@ app.post('/remove-background', async (req, res) => {
         res.status(500).send({ error: 'Background removal failed' });
     }
 });
-app.get('/')
+app.get('/', (req, res) => {
+    res.send("<h1>hello</h1>")
+})
+app.use(function (req, res, next) {
+    res.status(404).send('Sorry cant find that!');
+});
 
 const port = 3000;
 app.listen(port, () => console.log(`Server running on port ${port}`));

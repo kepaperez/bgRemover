@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom"
 import image1 from '../assets/homeImage.jpg';
+import arrow from '../assets/arrow-right.svg'
 const Home = () => {
     return (
         <div style={{
@@ -7,20 +8,24 @@ const Home = () => {
             alignItems: 'center',
             height: '90vh',
             width: '100%',
-            justifyContent: 'space-around'
-
-
+            justifyContent: 'space-around',
+            maxWidth: '80vw',
+            flexWrap: 'wrap',
+            gap:'25px'
 
         }}>
             <div style={{
-                maxWidth: '500px'
+
+                maxWidth: '80vw',
+
             }}>
                 <h1 >Remove the background of your images <span style={{ textDecoration: 'underline' }}>easily</span></h1>
-    
-                <Link to="/tool" className="navLink">
-                    <button className="button1">
-                        Use tool
-                    </button>
+
+                <Link to="/tool" className="button1">
+                    Use tool
+                    <img
+                        style={{ color:'white',width:'20px' }}
+                        src={arrow} />
                 </Link>
 
             </div>

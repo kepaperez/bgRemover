@@ -1,35 +1,50 @@
 import { useState } from "react";
-
+import download from '../assets/download.svg'
 const Tool = () => {
     const [url, setUrl] = useState('')
     const [processedImage, setProcessedImage] = useState('');
     const [isLoading, setIsLoading] = useState(false)
+    const [isValidUrl, setIsValidUrl] = useState(true);
     const removeBg = async () => {
-        setIsLoading(true)
-        const response = await fetch('http://localhost:3000/remove-background', {
-            // const response = await fetch('http://127.0.0.1:8000/removeBg', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ url }),
-        })
-        const jsonResponse = await response.json();
-        if (response.ok) {
-
-            setProcessedImage(jsonResponse.processedImage)
-            setIsLoading(false)
-        } else {
-            console.log("Error" + JSON.stringify(jsonResponse.error))
-            setIsLoading(false)
+        if (isValidUrl && url) {
+            setIsLoading(true)
+            const response = await fetch('http://localhost:3000/remove-background', {
+                // const response = await fetch('http://127.0.0.1:8000/removeBg', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url }),
+            })
+            const blobResponse = await response.blob();
+            if (response.ok) {
+                const url = URL.createObjectURL(blobResponse);
+                setProcessedImage(url)
+                setIsLoading(false)
+            } else {
+                console.log("Error" + JSON.stringify(blobResponse.error))
+                setIsLoading(false)
+            }
         }
+
     }
+
+
 
     const handleDownload = () => {
         const downloadLink = document.createElement('a');
-        downloadLink.href = `data:image/png;base64,${processedImage}`;
+        downloadLink.href = `${processedImage}`;
         downloadLink.download = 'processed_image.png';
         downloadLink.click();
+    };
+
+
+
+    const handleInputChange = (event) => {
+        const { value } = event.target;
+        setIsValidUrl(true)
+        setProcessedImage('')
+        setUrl(value)
     };
     return (
         <>
@@ -37,44 +52,57 @@ const Tool = () => {
 
             <div className="topHeader">
                 <input type='text'
-                placeholder="Image Url"
-                onChange={(e) => {
-                    setProcessedImage('')
-                    setUrl(e.currentTarget.value)
-                }} />
+                    placeholder="Image Url"
+                    onChange={
+                        handleInputChange
+                    } />
                 <button
-                className="button1"
-                onClick={removeBg}>
+                    className="button1"
+                    onClick={removeBg}>
                     Remove Background
+
                 </button>
             </div>
-            <h2>Preview</h2>
-            <div className='previewInputImg'>
-                <img className='imgPreview' src={url} />
-            </div>
+
+            {url ?
+                isValidUrl && url ? (
+                    <>
+                        <h2 style={{ marginTop: '45px' }}>Your image</h2>
+                        <div className='previewInputImg'>
+                            <img className='imgPreview' src={url} alt="User Image" onError={() => setIsValidUrl(false)} />
+                        </div>  </>) : (
+                    <p style={{ marginTop: '45px' }}>Invalid image URL</p>
+                )
+                : <></>}
+
+
+
             {processedImage || isLoading ?
+                <>
+                    <h2 style={{ marginTop: '45px' }}>Processed</h2>
+                    <div className='previewInputImg'>
 
-                <div className='previewInputImg'>
-                    <h2>Processed</h2>
-                    <div className='processedImageContainer'>
-                        {!isLoading ?
-                            <>
-                                <img className='imgPreview'
-                                    src={`data:image/png;base64,${processedImage}`}
-                                    alt="Processed Image"
-                                />
-                                <button onClick={handleDownload}>
-                                    Download
-                                </button>
-                            </>
+                        <div className='processedImageContainer'>
+                            {!isLoading ?
+                                <>
+                                    <img className='imgPreview'
+                                        src={processedImage}
+                                        alt="Processed Image"
+                                    />
+                                    <button className="button1" onClick={handleDownload}>
+                                        Download
+                                        <img
+                                            style={{ color: 'white', width: '25px' }}
+                                            src={download} />
+                                    </button>
+                                </>
+                                :
+                                <div>Loading ...</div>
+                            }
+                        </div>
 
-                            :
-                            <div>Loading ...</div>
-                        }
-                    </div>
 
-
-                </div> : <></>
+                    </div></> : <></>
 
             }
 
