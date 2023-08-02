@@ -1,5 +1,6 @@
 import { useState } from "react";
 import download from '../assets/download.svg'
+import Spinner from "../components/Spinner.JSX";
 const Tool = () => {
     const [url, setUrl] = useState('')
     const [processedImage, setProcessedImage] = useState('');
@@ -8,8 +9,8 @@ const Tool = () => {
     const removeBg = async () => {
         if (isValidUrl && url) {
             setIsLoading(true)
-            const response = await fetch('http://localhost:3000/remove-background', {
-                // const response = await fetch('http://127.0.0.1:8000/removeBg', {
+            //const response = await fetch('http://localhost:3000/remove-background', {
+                 const response = await fetch('http://127.0.0.1:8000/removeBg', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -18,6 +19,7 @@ const Tool = () => {
             })
             const blobResponse = await response.blob();
             if (response.ok) {
+                console.log(blobResponse)
                 const url = URL.createObjectURL(blobResponse);
                 setProcessedImage(url)
                 setIsLoading(false)
@@ -49,6 +51,7 @@ const Tool = () => {
     return (
         <>
             <h1>Remove Background</h1>
+        
 
             <div className="topHeader">
                 <input type='text'
@@ -97,7 +100,7 @@ const Tool = () => {
                                     </button>
                                 </>
                                 :
-                                <div>Loading ...</div>
+                                <Spinner />
                             }
                         </div>
 
