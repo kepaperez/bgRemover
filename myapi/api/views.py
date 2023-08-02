@@ -1,10 +1,11 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 import rembg
 import base64
 import requests
-
+from PIL import Image
+import io
 @api_view(['GET'])
 def getData(request):
     person ={"name":"kepa","age":23}
@@ -26,9 +27,17 @@ def removeBg(request):
                 image_bytes = rembg.remove(response.content)
 
                 # Convert the processed image to base64
-                image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+                #image_base64 = base64.b64encode(image_bytes).decode('utf-8')
+     
+                # Create a PIL image object from the processed image data
+                processed_image = Image.open(io.BytesIO(image_bytes))
 
-                return Response({'processedImage': image_base64})
+                # Save the processed image to a byte stream
+                processed_image_stream = io.BytesIO()
+                processed_image.save(processed_image_stream, format='PNG')
+
+                # Return the processed image in the API response with content_type='image/jpeg'
+                return HttpResponse(processed_image_stream.getvalue(), content_type='image/PNG')
 
             except requests.exceptions.RequestException as e:
                 return Response({'error': 'Error downloading image: ' + str(e)}, status=400)

@@ -27,7 +27,7 @@ app.post('/remove-background', async (req, res) => {
 
         // Write the image data to a temporary file (input.jpg)
         const inputPath = 'input.jpg';
-        const outputPath = 'output.png';
+    const outputPath = 'output.png';
 
         fs.writeFileSync(inputPath, imageData);
 
