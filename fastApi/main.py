@@ -24,6 +24,7 @@ app.add_middleware(
 )
 
 
+
 @app.get("/getData")
 async def getData():
     person = {"name": "kepa", "age": 23}
