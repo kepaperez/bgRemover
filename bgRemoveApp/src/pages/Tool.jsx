@@ -1,6 +1,6 @@
 import { useState } from "react";
 import download from '../assets/download.svg'
-import Spinner from "../components/Spinner.JSX";
+import Spinner from "../components/Spinner.jsx";
 const Tool = () => {
     const [url, setUrl] = useState('')
     const [processedImage, setProcessedImage] = useState('');
